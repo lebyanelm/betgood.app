@@ -79,4 +79,4 @@ print("\n")
 print(crosstab)
 
 # Save a model
-save_model("soccor_w-l_rf_estimator", rf_classifier)
+# save_model("soccor_w-l_rf_estimator", rf_classifier)
