@@ -1,6 +1,6 @@
 import json
 from flask import make_response
-from models.http_codes import http_codes
+from classes.http_codes import http_codes
 
 
 class Response():
