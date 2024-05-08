@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %} Upcoming matches | BetGood {% endblock %}
+
+{% block back_button %} <a href="/">Back</a> {% endblock %}
+{% block header %} Upcoming matches: {% endblock %}
+
+{% block content %}
+    <ul class="matches">
+        {% for match in [1, 2, 3] %}
+            <li class="match">
+                <div class="match-datetime-venue">29 Apr, 19H00: Urbanis Stadium</div>
+                <a href="/soccer_matches/match/290404" class="match-details">
+                    <div class="team match-home-team">
+                        <img class="team-crest" src="/static/images/65.png"></img>
+                        <span class="team-name">Man United</span>
+                        <div class="odds">OH: (1.3)</div>
+                        <div class="prob">PH: (50%)</div>
+                    </div>
+                    
+                    <div class="match-score-status">
+                        {% if false %} <!-- match has started: shows score + time + status -->
+                            <div class="match-score">4 : 5</div>
+                            <div class="match-status">PLAYING</div>
+
+                        {% else %} <!-- match has not started: shows date + time + status-->
+                            <div class="match-score">X : X</div>
+                            <div class="match-status">UPCOMING</div>
+                        {% endif %}
+
+                        <div class="odds">OD: (3.2)</div>
+                        <div class="prob">PD: (25%)</div>
+                        <div class="prob">PBS: (85%)</div>
+                        <div class="prob"></div>
+                    </div>
+
+                    <div class="team match-away-team">
+                        <img class="team-crest" src="/static/images/340.png"></img>
+                        <span class="team-name">Southampton</span>
+                        <div class="odds">OA: (5.1)</div>
+                        <div class="prob">PA: (25%)</div>
+                    </div>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

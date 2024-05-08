@@ -1,0 +1,399 @@
+:root {
+    /* COLORS */
+    --background-color: #1E1E1E;
+    --surface-background-color: #000000;
+    --surface-background-color-light: #0a0a0a;
+    --primary-text-color: #E4E4E4;
+    --danger-color: #CF6679;
+    --success-color: #4db33d;
+    --text-color-primary-seconday-error: #000000;
+    --primary-color: #3700B3;
+    --primary-varient-color: #BB86FC;
+    --secondary-color: #03DAC6;
+
+    /* TYPOGRAPHY */
+    --header-font-family: "Noto Serif", serif;
+    --primary-font-family: "Urbanist", sans-serif;
+
+    /* PROPORTIONS */
+    --primary-font-size: 21px;
+    --sub-primary-font-size: 16px;
+    --header-font-size: 32px;
+    --sub-header-font-size: 26px;
+    --border-small: 1px solid var(--primary-text-color);
+    --border: 2px solid var(--primary-text-color);
+    --border-2: 3px solid var(--primary-text-color);
+    --primary-border: 2px solid var(--primary-color);
+    --secondary-border: 2px solid var(--secondary-color);
+    --size-5: 5px;
+    --size-10: 10px;
+    --size-20: 20px;
+    --size-30: 30px;
+    --size-40: 40px;
+    --border-radius: 10px;
+    --border-radius-15: 15px;
+    --border-radius-30: 30px;
+}
+
+
+/* PAGE RESETS */
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--background-color);
+    font-family: var(--primary-font-family);
+    color: var(--primary-text-color);
+}
+
+/* TYPOGRAPHY */
+h1, h4, h5, h6 {
+    font-family: var(--header-font-family);
+    margin: 0;
+}
+
+h1 {
+    font-size: var(--header-font-size);
+    font-weight: 900;
+}
+
+h4 {
+    font-size: var(--sub-header-font-size);
+    font-weight: 400;
+}
+
+a {
+    text-transform: uppercase;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+    color: var(--primary-text-color);
+    font-size: var(--sub-primary-font-size);
+    font-weight: bold;
+}
+
+a:hover {
+    color: var(--secondary-color);
+}
+
+/* HEADER SECTION */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--size-20);
+}
+
+.header-section .logo-placement {
+    height: 50px;
+}
+
+.header-section .inspiration {
+    transform: translateX(var(--size-40));
+}
+
+.pre-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--size-5) 0;
+    position: relative;
+}
+
+.pre-header img {
+    height: 20px;
+    position: absolute;
+    top: var(--size-5);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.page-header {
+    margin: var(--size-10) 0;
+}
+
+/* MAIN CONTAINER */
+section.phone-container {
+    height: 720px;
+    width: 360px;
+    border: var(--border);
+    border-radius: var(--border-radius-30);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--surface-background-color);
+    padding: var(--size-10);
+    user-select: none !important;
+}
+
+.phone-container > img.statusbar {
+    width: 100%;
+    mix-blend-mode: screen;
+}
+
+.betting-field {
+    display: flex;
+    gap: var(--size-10);
+    width: 100%;
+}
+
+.betting-field .name {
+    display: block;
+    padding: var(--size-5) var(--size-10);
+    border: var(--secondary-border);
+    border-radius: var(--size-30);
+    text-align: center;
+    flex: 1;
+}
+
+.betting-field .name[data-active="true"] {
+    background: var(--secondary-color);
+    color: var(--primary-text-color);
+}
+
+/* BET CHOOSER */
+.bet-chooser {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-10);
+}
+
+.bet-chooser .bet-name {
+    display: block;
+    background: var(--surface-background-color-light); 
+    padding: var(--size-40) 0;
+    border: var(--primary-border);
+    border-color: transparent;
+    text-align: center;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+.bet-chooser .bet-name:hover {
+    border-color: var(--secondary-color);
+}
+
+/* MATCHES */
+.matches {
+    padding: 0;
+    margin: 0;
+}
+
+.matches .match {
+    list-style: none;
+    border: var(--border-small);
+    border-color: rbga(var(--primary-text-color), 0.8);
+    background: var(--surface-background-color-light);
+    border-radius: var(--border-radius);
+    padding: var(--size-10) 0;
+    margin-top: var(--size-10);
+    text-transform: uppercase;
+}
+
+.matches .match:hover {
+    border-color: var(--secondary-color);
+}
+
+.matches .match:hover a {
+    color: var(--primary-text-color);
+}
+
+.matches .match .match-datetime-venue {
+    text-align: center;
+    margin-bottom: var(--size-5);
+    font-weight: bold;
+}
+
+.matches .match .match-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+}
+
+.matches .match .match-details > * {
+    flex: 1;
+}
+
+.matches .match .match-details .match-score-status,
+.matches .match .match-details .team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.matches .match .match-details .match-score-status .match-score {
+    margin: 0;
+    font-weight: bold;
+}
+
+.matches .match .match-details .team .team-crest {
+    height: 40px;
+    margin-bottom: var(--size-5);
+}
+
+.matches .match .match-details .team .team-name {
+    font-size: small;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+}
+
+.matches .match .match-details .match-score-status .odds,
+.matches .match .match-details .team  .odds {
+    font-weight: bolder;
+    margin-top: var(--size-5);
+    color: var(--danger-color);
+}
+
+.matches .match .match-details .match-score-status .odds {
+    margin-top: calc(var(--size-5) + 2px);
+}
+
+.match-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: var(--border);
+    background: var(--surface-background-color-light);
+    border-radius: var(--border-radius);
+    padding: var(--size-10);
+}
+
+.match-card .stadium-name {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.match-card .league-name {
+    color: var(--secondary-color);
+}
+
+.match-card .match-progress {
+    width: 100%;
+    background: var(--surface-background-color);   
+    margin: var(--size-10);
+    position: relative;
+}
+
+.match-card .match-progress,
+.match-card .match-progress .match-current-progress {
+    height: 10px;
+    border-radius: var(--border-radius);
+}
+
+.match-card .match-progress .match-current-progress {
+    width: 25%;
+    background: var(--secondary-color);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.match-score-board {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.match-score-board .team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.match-score-board .team .team-crest img {
+    height: 50px;
+}
+
+.match-score-board .team .current-score {
+    margin: var(--size-10);
+    font-weight: 900;
+}
+
+.match-score-board .middle {
+    position: relative;
+}
+
+.match-score-board .middle .versus {
+    --versus-size: 25px;
+    display: grid;
+    place-items: center;
+    height: var(--versus-size);
+    width: var(--versus-size);
+    border-radius: var(--versus-size);
+    background: var(--primary-text-color);
+    color: var(--surface-background-color);
+    font-weight: bold;
+    font-size: small;
+    z-index: 1;
+}
+
+.match-score-board .middle::before {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 100px;
+    background: var(--primary-text-color);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+.match-score-board .team .team-name {
+    margin-top: var(--size-10);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* ODDS MARKET PREDICTIONS */
+.odds-market-predictions .odds-market {
+    margin-top: var(--size-20);
+}
+
+.odds-market-predictions .odds-market:not(:first-child) {
+    padding-top: var(--size-20);
+}
+
+.odds-market-predictions .odds-market:not(:first-child) {
+    border-top: var(--border);
+}
+
+.odds-market-predictions .market-title {
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+}
+
+.odds-market-predictions .outcomes {
+    display: grid;
+    gap: var(--size-10);
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: var(--size-10);
+}
+
+.odds-market-predictions .outcomes .outcome {
+    text-align: center;
+    padding: var(--size-5);
+    background: var(--surface-background-color-light);
+    border-radius: var(--border-radius);
+    border: var(--border-small);
+    border-color: rgba(255, 255, 255, 0.5)
+}
+
+.odds-market-predictions .outcomes .outcome[data-predicted="true"] {
+    background: var(--success-color);
+}
+
+.odds-market-predictions .outcomes .outcome .name {
+    font-weight: bolder;
+}
+
+.odds-market-predictions .odds-market.grid-2 .outcomes {
+    grid-template-columns: 1fr 1fr;
+}

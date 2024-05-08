@@ -4,14 +4,17 @@ SERVER_NAME
 Server description goes here
 __________________________________
 """
-import pickle
-import helpers
-from flask import Flask
+import os
+import pandas as pd
+import datetime
+import requests
+import helpers.all
+from flask import Flask, render_template
 from flask_cors import CORS, cross_origin
-from pymongo import MongoClient
 from os import environ
 from dotenv import load_dotenv
 from classes.response import Response
+
 
 """
 __________________________________
@@ -21,106 +24,99 @@ __________________________________
 if environ.get("environment") != "production":
 	load_dotenv()
 
+
 """
 __________________________________
 SERVER INSTANCE SETUP
 __________________________________
 """
 server_instance = Flask(__name__,
-    static_folder="./assets/",
-    static_url_path="/server_name/assets/")
+    static_folder="./static/",
+    static_url_path="/static/")
 CORS(server_instance, resources={r"*": {"origins": "*"}})
 
-"""
-__________________________________
-DATABASE CONNECTION
-__________________________________
-"""
-client = None
-if environ.get("MONGO_CONNECTION"):
-    client = MongoClient(environ.get("MONGODB_CONNECTION"), tlsInsecure=True)
-
 
 """
 __________________________________
-LOAD THE MODELS
+PAGE VIEW ROUTES
 __________________________________
 """
-soccer_estimator = None
-with open("./models/soccer-estimator.pkl", 'rb') as f:
-    soccer_estimator = pickle.load(f)
-
-
-"""
-__________________________________
-SERVER INSTANCE ROUTES
-__________________________________
-"""
-# Returns status of the server
+"""Returns status of the server"""
 @server_instance.route("/template/status", methods=["GET"])
 @cross_origin()
 def status():
     return Response(cd=200, msg="Running.").to_json()
 
 
+@server_instance.route("/", methods=["GET"])
+@cross_origin()
+def index():
+    return render_template("index.html", name="BeGood")
+
+
+@server_instance.route("/soccer_matches", methods=["GET"])
+@cross_origin()
+def index_soccer_matches():
+    return render_template("soccer_matches.html", name="BeGood")
+
+
+@server_instance.route("/soccer_matches/match/<match_id>", methods=["GET"])
+@cross_origin()
+def index_soccer_match(match_id):
+    return render_template("match.html", name="BeGood")
+
+
+"""
+__________________________________
+BACKEND API ROUTES
+__________________________________
+"""
 # Gets fixtures and makes predictions
 @server_instance.route("/predictions/soccer", methods=["GET"])
 @cross_origin()
-def get_soccer_predictions():
-    fixtures = helpers.get_soccer_fixtures()
-    all_predictions = dict(fixtures=list())
+def predictions():
+    fixtures = helpers.all.inferences.get_soccer_fixtures()
+    results = list()
 
-    for league_name in fixtures["leagues"]:
-        league_matches = fixtures["fixtures"][league_name]
-        
-        league_predictions = list()
-        for index, upcoming_match in enumerate(fixtures["fixtures"][league_name]):
-            """Get the label IDs"""
-            fixtures["fixtures"][league_name][index]["home_id"] = helpers.get_label_id(type="teams", 
-                                                                                        target_label=fixtures["fixtures"][league_name][index]["home_name"])
-            fixtures["fixtures"][league_name][index]["away_id"] = helpers.get_label_id(type="teams", 
-                                                                                        target_label=fixtures["fixtures"][league_name][index]["away_name"])
+    for fixture in fixtures:
+        if fixture["odds"]["homeWin"] != None:
+            features = [fixture["competition"]["id"],
+                fixture["homeTeam"]["id"],
+                fixture["awayTeam"]["id"],
+                fixture["odds"]["homeWin"],
+                fixture["odds"]["draw"],
+                fixture["exp_weather_condition"]["temperature_2m"],
+                fixture["exp_weather_condition"]["relative_humidity_2m"],
+                fixture["exp_weather_condition"]["precipitation"],
+                fixture["exp_weather_condition"]["cloud_cover"],
+                fixture["exp_weather_condition"]["wind_speed_100m"],
+                fixture["exp_weather_condition"]["elevation"]]
+            # outcome = soccer_estimator.predict([features])
 
-            """Get the estimator"""
-            prediction_result = helpers.get_soccer_match_prediction(predictors=[
-                                    fixtures["fixtures"][league_name][index]["day"],
-                                    fixtures["fixtures"][league_name][index]["hour"],
-                                    fixtures["fixtures"][league_name][index]["home_odds"],
-                                    fixtures["fixtures"][league_name][index]["draw_odds"],
-                                    fixtures["fixtures"][league_name][index]["away_odds"],
-                                    fixtures["fixtures"][league_name][index]["home_id"],
-                                    fixtures["fixtures"][league_name][index]["away_id"],
-                                ], model=soccer_estimator)
-            
-            """Decode the estimator"""
-            if prediction_result[0] == fixtures["fixtures"][league_name][index]["home_id"]:
-                fixtures["fixtures"][league_name][index]["home_result"] = "W"
-                fixtures["fixtures"][league_name][index]["away_result"] = "L"
-                fixtures["fixtures"][league_name][index]["home_result_color"] = "4db33d"
-                fixtures["fixtures"][league_name][index]["away_result_color"] = "777777"
+            fixture["day"] = fixture["utcDate"].strftime("%d, %m %Y - %H:%M")
+            # fixture["time"] = fixture["utcDate"].time()
+            del fixture["utcDate"]
+            # fixture["expected_outcome"] = outcome[0]
+            results.append(fixture)
+    datetime.datetime.now().time
+    return Response(cd=200, d=results).to_json()
 
-                fixtures["fixtures"][league_name][index]["home_pred"] = round(prediction_result[1] * 100, 2)
-                fixtures["fixtures"][league_name][index]["draw_pred"] = 0
-                fixtures["fixtures"][league_name][index]["away_pred"] = round((1-prediction_result[1]) * 100, 2)
-            
-            else:
-                fixtures["fixtures"][league_name][index]["home_result"] = "L"
-                fixtures["fixtures"][league_name][index]["away_result"] = "W"
-                fixtures["fixtures"][league_name][index]["home_result_color"] = "777777"
-                fixtures["fixtures"][league_name][index]["away_result_color"] = "4db33d"
 
-                fixtures["fixtures"][league_name][index]["home_pred"] = round((1-prediction_result[1]) * 100, 2)
-                fixtures["fixtures"][league_name][index]["draw_pred"] = 0
-                fixtures["fixtures"][league_name][index]["away_pred"] = round(prediction_result[1] * 100, 2)
-                
-            fixtures["fixtures"][league_name][index]["home_name"] = fixtures["fixtures"][league_name][index]["home_name"].upper()
-            fixtures["fixtures"][league_name][index]["away_name"] = fixtures["fixtures"][league_name][index]["away_name"].upper()
+@server_instance.route("/predictions/financial/<symbol_pair>", methods=["GET"])
+@cross_origin()
+def get_crypto_symbol_prediction(symbol_pair, interval=60):
+    """
+    Runs a prediction on the crypto market and returns the direction of the symbol with the data.
+    """
+    candle_response = requests.get(f"https://www.bitstamp.net/api/v2/ohlc/{symbol_pair}/?step={interval}&limit=30")
+    if candle_response.status_code == 200:
+        candle_data = financial_indicators.append_technical_indicators(pd.DataFrame.from_dict(candle_response.json()["data"]["ohlc"]))
+        current_candle = candle_data.iloc[-1].values.reshape(-5)
+        print(current_candle)
 
-    """Prepare the fixtures to be sent to an email."""
-    email_data = dict(fixtures=list())
-    for league_name in fixtures["leagues"]:
-        email_data["fixtures"].append(dict(is_name=True, name=league_name))
-        for match in fixtures["fixtures"][league_name]:
-            email_data["fixtures"].append(match)
+        prediction = helpers.all.make_prediction(os.environ["AAPL_MODEL"], list(), values=current_candle)[0]
+        print(prediction)
 
-    return Response(cd=200, d=email_data).to_json()
+        return Response(cd=200, d=dict(direction="up" if prediction == 1 else "down")).to_json()
+    else:
+        return Response(cd=candle_response.status_code, rs=f"Something went wrong. {candle_response.text}").to_json()

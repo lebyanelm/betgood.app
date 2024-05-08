@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %} Man United vs Southampton | BetGood {% endblock %}
+
+{% block back_button %} <a href="/soccer_matches">Back</a> {% endblock %}
+{% block header %} Match: {% endblock %}
+
+{% block content %}
+    <div class="match-card">
+        <div class="stadium-name">Urbanis Stadium</div>
+        <div class="league-name">Started - 34:23 min</div>
+        
+        <div class="match-progress">
+            <div class="match-current-progress"></div>
+        </div>
+
+        <div class="match-score-board">
+            <div class="team home-team">
+                <h4 class="current-score">5</h4>
+                <div class="team-crest"><img src="/static/images/65.png" alt=""></div>
+                <div class="team-name">Man United</div>
+            </div>
+
+            <div class="middle">
+                <div class="versus">vs</div>
+            </div>
+            
+            <div class="team home-team">
+                <h4 class="current-score">4</h4>
+                <div class="team-crest"><img src="/static/images/340.png" alt=""></div>
+                <div class="team-name">Southampton</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="odds-market-predictions">
+        <section class="odds-market grid-3">
+            <div class="market-title">Home/Draw/Away</div>
+            <div class="outcomes">
+                <div class="outcome" data-predicted="true">
+                    <div class="name">Home Win</div>
+                    <div class="probability">P (65%)</div>
+                </div>
+    
+                <div class="outcome">
+                    <div class="name">Draw</div>
+                    <div class="probability">P (15%)</div>
+                </div>
+    
+                <div class="outcome">
+                    <div class="name">Away Win</div>
+                    <div class="probability">P (20%)</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="odds-market grid-2">
+            <div class="market-title">Overs/Unders</div>
+            <div class="outcomes">
+                <div class="outcome">
+                    <div class="name">Over 2.5</div>
+                    <div class="probability">P (65%)</div>
+                </div>
+    
+                <div class="outcome">
+                    <div class="name">Under 2.5</div>
+                    <div class="probability">P (15%)</div>
+                </div>
+
+                <div class="outcome">
+                    <div class="name">Over 3.5</div>
+                    <div class="probability">P (65%)</div>
+                </div>
+    
+                <div class="outcome" data-predicted="true">
+                    <div class="name">Under 3.5</div>
+                    <div class="probability">P (15%)</div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+{% endblock %}

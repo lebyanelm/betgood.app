@@ -1,0 +1,59 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <!-- TENSORFLOW -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-cpu"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite/dist/tf-tflite.min.js"></script>
+
+    <!-- TENSORFLOW MODELS: I DONT MIND HAVING THESE PUBLIC, LETS MAKE MONEY TOGETHER! :) -->
+    <script>
+        const TENSOR_MODELS = {
+            "financial_inferences": {
+                "aapl": "https://pub-d5783497a85648f28619155e19b7e410.r2.dev/converted_model.tflite" 
+            }
+        }
+
+        async function getInference(model_type, model_name, input_data) {
+            console.log(model_type, model_name, input_data)
+            const model = await tflite.loadTFLiteModel('https://pub-d5783497a85648f28619155e19b7e410.r2.dev/converted_model.tflite');
+            input_tensor = tf.tensor2d([input_data])
+            return model.predict(input_tensor).dataSync()[0]
+        }
+
+        getInference("financial_inference", "aapl", [65.  ,61.  , 1.86,   3.56,   4.3 ,   1.  , 232.  ,  19.  ,45.]).then((d) => console.log("Output: ", d));
+    </script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header-section">
+        <img src="/static/logo.svg" alt="logo-placement" class="logo-placement">
+        <span class="inspiration">Developed with Python (Flask + Jinja2) by Libby</span>
+        <a href="">View source code</a>
+    </div>
+    
+    <section class="phone-container">
+        <img src="/static/statusbar.png" alt="statusbar" class="statusbar">
+
+        <div class="content">
+            <div class="pre-header">
+                <div class="back">{% block back_button %}{% endblock %}</div>
+                <div class="fav-logo"><img src="/static/favicon.png" alt="fav-logo"></div>
+                <div class="space">BetGood</div>
+            </div>
+            <h1 class="page-header">{% block header %}{% endblock %}</h1>
+    
+            {% block content %}
+            {% endblock %}
+        </div>
+    </section>
+</body>
+</html>
