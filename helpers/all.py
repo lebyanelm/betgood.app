@@ -1,5 +1,5 @@
 # IMPORTS
-import inferences
+import helpers.inferences
 
 
 # INDICATOR PERIODS
